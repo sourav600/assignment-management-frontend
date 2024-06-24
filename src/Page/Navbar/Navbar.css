@@ -1,0 +1,9 @@
+.container{
+    background-image: linear-gradient(150deg, #c24dd0,#7a72fa);
+    /* background-image: linear-gradient(150deg, #159189,#1DB7AE); */
+}
+@media (max-width: 2048px) {
+    .container {
+        max-width: 100%;
+    }
+}
