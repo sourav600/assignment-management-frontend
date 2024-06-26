@@ -6,6 +6,9 @@ import { Autocomplete, Grid, TextField } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTasksById, updateTask } from '../../../ReduxToolkit/TaskSlice';
+import { useLocation } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -22,8 +25,13 @@ const style = {
 
 const tags = ["C", "C++", "JAVA", "Python", "php", "mySQL"]
 
-export default function EditTaskForm({ handleClose, open }) {
+export default function EditTaskForm({ item, handleClose, open }) {
 
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const queryParams=new URLSearchParams(location.search);
+    const taskId=queryParams.get("taskId");
+    const { task } = useSelector(store => store);
     const [formData, setFormData] = useState({
         title: "",
         image: "",
@@ -45,14 +53,14 @@ export default function EditTaskForm({ handleClose, open }) {
         setSelectedTags(value);
     }
 
-    const handleDeadlineChange=(date)=>{
+    const handleDeadlineChange = (date) => {
         setFormData({
             ...formData,
-            deadline:date
+            deadline: date
         })
     }
 
-    const formateDate=(input)=>{
+    const formateDate = (input) => {
         let {
             $y: year,
             $M: month,
@@ -63,25 +71,30 @@ export default function EditTaskForm({ handleClose, open }) {
             $ms: miliseconds,
         } = input;
 
-        const date=new Date(year, month, day, hours, minutes, seconds, miliseconds);
+        const date = new Date(year, month, day, hours, minutes, seconds, miliseconds);
 
         const formatedDate = date.toISOString();
         return formatedDate;
 
     }
 
-    const handleSubmit=(e)=>{
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const {deadline}=formData;
+        const { deadline } = formData;
         formData.deadline = formateDate(deadline);
         formData.tag = selectedTags;
-        console.log("formData",formData,"deadline : ",formData.deadline)
+        console.log("formData", formData, "deadline : ", formData.deadline);
+        dispatch(updateTask({id:taskId, updatedTaskData:formData}));
         handleClose()
     }
 
-    useEffect(()=>{
+    useEffect(() => {
+        dispatch(fetchTasksById(taskId));
+    }, [taskId]);
 
-    },[])
+    useEffect(() => {
+        if (task.taskDetails) setFormData(task.taskDetails)
+    }, [task.taskDetails])
 
     return (
         <div>
@@ -141,19 +154,19 @@ export default function EditTaskForm({ handleClose, open }) {
                             </Grid>
                             <Grid item xs={12}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DateTimePicker 
-                                    onChange={handleDeadlineChange}
-                                    className='w-full' 
-                                    label="Deadline" 
-                                    renderInput={(params)=><TextField {...params}/>}
+                                    <DateTimePicker
+                                        onChange={handleDeadlineChange}
+                                        className='w-full'
+                                        label="Deadline"
+                                        renderInput={(params) => <TextField {...params} />}
                                     />
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12}>
                                 <Button fullWidth
-                                className='customButton'
-                                type='submit'
-                                sx={{padding:".9rem"}}>
+                                    className='customButton'
+                                    type='submit'
+                                    sx={{ padding: ".9rem" }}>
                                     Update
                                 </Button>
                             </Grid>

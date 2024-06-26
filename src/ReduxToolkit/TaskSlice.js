@@ -56,7 +56,7 @@ export const createTask = createAsyncThunk("task/createTask",
         setAuthHeader(localStorage.getItem("jwt"), api)
 
         try {
-            const { data } = await api.post(`/api/tasks/`, taskData);
+            const { data } = await api.post(`/api/tasks`, taskData);
             console.log("Created task ", data)
             return data;
         } catch (error) {
@@ -102,7 +102,7 @@ export const deleteTask = createAsyncThunk("task/deleteTask",
 
         try {
             const { data } = await api.delete(`/api/tasks/${taskId}`);
-            console.log("Delete task successfully", data)
+            console.log("Delete task successfully")
             return taskId;
         } catch (error) {
             console.log("Error ", error)
@@ -143,11 +143,15 @@ const taskSlice = createSlice({
             })
             .addCase(fetchUsersTasks.fulfilled, (state, action) => {
                 state.loading = false;
-                state.usersTask = action.payload
+                state.usersTask = action.payload;
             })
             .addCase(fetchUsersTasks.rejected, (state, action) => {
                 state.error = action.error.message;
                 state.loading = false;
+            })
+            .addCase(fetchTasksById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.taskDetails = action.payload;
             })
 
             .addCase(createTask.pending, (state) => {

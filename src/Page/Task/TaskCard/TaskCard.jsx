@@ -1,15 +1,20 @@
 import { IconButton } from '@mui/material'
 import React, { useState } from 'react'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import UserList from '../UserList';
 import SubmissionList from './SubmissionsList';
 import EditTaskForm from './EditTaskForm';
+import { useDispatch } from 'react-redux';
+import {deleteTask} from"../../../ReduxToolkit/TaskSlice"
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const role = "ROLE_ADMIN"
-const TaskCard = () => {
+const TaskCard = ({item}) => {
+    const dispatch=useDispatch();
+    const location=useLocation();
+    const navigate=useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
     const handleMenuClick = (event) => {
@@ -41,12 +46,25 @@ const TaskCard = () => {
     const handleCloseUpdateTaskForm=()=>{
         setOpenUpdateTaskForm(false);
     }
+
+    const handleRemoveTaskIdParams=()=>{
+        const updatedParams = new URLSearchParams(location.search);
+        updatedParams.delete("filter")
+        const queryString = updatedParams.toString();
+        const updatedPath = queryString?`${location.pathname}?${queryString}`
+        :location.pathname;
+        navigate(updatedPath);
+    }
     const handleOpenUpdateTaskModel = () => {
-        setOpenUpdateTaskForm(true)
+        const updatedParams = new URLSearchParams(location.search);
+        setOpenUpdateTaskForm(true);
+        updatedParams.set("taskId",item.id);
+        navigate(`${location.pathname}?${updatedParams.toString()}`)
         handleMenuClose();
     };
 
     const handleDeleteTask = () => {
+        dispatch(deleteTask(item.id));
         handleMenuClose();
     };
     return (
@@ -56,20 +74,20 @@ const TaskCard = () => {
             [70%]'>
                     <div className=''>
                         <img className='lg:w-[7rem] lg:h-[7rem] object-cover'
-                            src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwqRQUcxrL6WYZeeluHrWVGHXtIZx0VWCc8w&s'
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwqRQUcxrL6WYZeeluHrWVGHXtIZx0VWCc8w&s"
                             alt="Image Loading!" />
 
                     </div>
                     <div className='space-y-5'>
                         <div className='space-y-2'>
-                            <h1 className='font-bold text-lg'>Website 1</h1>
-                            <p className='text-gray-500 text-sm'>Descripasdgv asdgjhagsd asdhkjhasdgk adsghka sghjkf</p>
+                            <h1 className='font-bold text-lg'>{item.title}</h1>
+                            <p className='text-gray-500 text-sm'>{item.description}</p>
 
                         </div>
                         <div className=' flex flex-wrap gap-2 items-center'>
-                            {[1, 1, 1, 1].map((item) => <span className='py-1 px-5
+                            {item.tags.map((item) => <span className='py-1 px-5
                         rounded-full techStack'>
-                                Angular
+                                {item}
                             </span>)}
 
                         </div>
@@ -109,7 +127,7 @@ const TaskCard = () => {
             </div>
             <UserList open={openUserList} handleClose={handleCloseUserList}/>
             <SubmissionList open={openSubmissionList} handleClose={handleCloseSubmissionList}/>
-            <EditTaskForm open={openUpdateTaskForm} handleClose={handleCloseUpdateTaskForm}/>
+            <EditTaskForm item={item} open={openUpdateTaskForm} handleClose={handleCloseUpdateTaskForm}/>
         </div>
     )
 }
