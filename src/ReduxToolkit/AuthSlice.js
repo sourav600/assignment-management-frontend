@@ -51,8 +51,8 @@ export const getUserProfile = createAsyncThunk("auth/getUserProfile",async(jwt)=
     }
 })
 
-export const getUserList = createAsyncThunk("auth/getUserList",async(jwt)=>{
-    setAuthHeader(jwt,api)
+export const getUserList = createAsyncThunk("auth/getUserList",async (jwt) =>{
+    setAuthHeader(jwt,api);
     try{
         const {data} = await api.get(`/api/users`)
         

@@ -22,7 +22,7 @@ const style = {
 };
 
 
-const tags = ["C", "C++", "JAVA", "Python", "php", "mySQL","Spring Boot", "ReactJs", "NodeJs","Angular"]
+const tagList = ["C", "C++", "JAVA", "Python", "php", "mySQL","Spring Boot", "ReactJs", "NodeJs","Angular"]
 
 export default function CreateNewTaskForm({ handleClose, open }) {
     const dispatch=useDispatch();
@@ -30,7 +30,7 @@ export default function CreateNewTaskForm({ handleClose, open }) {
         title: "",
         image: "",
         description: "",
-        tag: [],
+        tags: [],
         deadline: new Date(),
     });
 
@@ -76,7 +76,7 @@ export default function CreateNewTaskForm({ handleClose, open }) {
         e.preventDefault();
         const {deadline}=formData;
         formData.deadline = formateDate(deadline);
-        formData.tag = selectedTags;
+        formData.tags = selectedTags;
         dispatch(createTask(formData));
         console.log("Form Data",formData,"deadline : ",formData.deadline)
         handleClose()
@@ -126,7 +126,7 @@ export default function CreateNewTaskForm({ handleClose, open }) {
                                 <Autocomplete
                                     multiple
                                     id='multiple-limit-tags'
-                                    options={tags}
+                                    options={tagList}
                                     onChange={handleTagsChange}
                                     getOptionLabel={(option) => option}
                                     renderInput={(params) =>

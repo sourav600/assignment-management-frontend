@@ -23,12 +23,12 @@ const style = {
 };
 
 
-const tags = ["C", "C++", "JAVA", "Python", "php", "mySQL"]
+const tags = ["C", "C++", "JAVA", "Python", "php", "mySQL","Spring Boot", "ReactJs", "NodeJs","Angular"]
 
 export default function EditTaskForm({ item, handleClose, open }) {
 
-    const location = useLocation();
     const dispatch = useDispatch();
+    const location = useLocation();
     const queryParams=new URLSearchParams(location.search);
     const taskId=queryParams.get("taskId");
     const { task } = useSelector(store => store);
@@ -36,7 +36,7 @@ export default function EditTaskForm({ item, handleClose, open }) {
         title: "",
         image: "",
         description: "",
-        tag: [],
+        tags: [],
         deadline: new Date(),
     });
 
@@ -82,8 +82,8 @@ export default function EditTaskForm({ item, handleClose, open }) {
         e.preventDefault();
         const { deadline } = formData;
         formData.deadline = formateDate(deadline);
-        formData.tag = selectedTags;
-        console.log("formData", formData, "deadline : ", formData.deadline);
+        formData.tags = selectedTags;
+        console.log("formData", formData, "deadline : ", formData.deadline, "Tags: ",formData.tags);
         dispatch(updateTask({id:taskId, updatedTaskData:formData}));
         handleClose()
     }
@@ -93,8 +93,8 @@ export default function EditTaskForm({ item, handleClose, open }) {
     }, [taskId]);
 
     useEffect(() => {
-        if (task.taskDetails) setFormData(task.taskDetails)
-    }, [task.taskDetails])
+        if (task.taskDetails) setFormData(task.taskDetails);
+    }, [task.taskDetails]);
 
     return (
         <div>

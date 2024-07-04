@@ -12,6 +12,7 @@ const TaskList = () => {
   const filterValue=queryParams.get("filter");
 
   useEffect(() => {
+    console.log("Filter Value: ", filterValue);
     if(auth.user?.role==="ROLE_ADMIN"){
       dispatch(fetchTasks({status:filterValue}));
     }
@@ -20,18 +21,15 @@ const TaskList = () => {
     }
   }, [filterValue]);
 
-  console.log("task", task)
   return (
     <div className='w-[67vw]'>
       <div className='space-y-5'>
-        {task.tasks.map((item) => (
+        {auth.user?.role==="ROLE_ADMIN"? task.tasks.map((item) => (
+          <TaskCard  item={item}/>
+        )) : task.usersTask.map((item) => (
           <TaskCard  item={item}/>
         ))}
       </div>
-
-
-
-
     </div>
   )
 }

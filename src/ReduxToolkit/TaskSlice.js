@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api, setAuthHeader } from "../api/api"
-import { Flag } from "@mui/icons-material";
 
 export const fetchTasks = createAsyncThunk("task/fetchTasks",
     async ({ status }) => {
@@ -71,8 +70,9 @@ export const updateTask = createAsyncThunk("task/updateTask",
         setAuthHeader(localStorage.getItem("jwt"), api)
 
         try {
+            console.log("Updated task : ", updatedTaskData);
             const { data } = await api.put(`/api/tasks/${id}`, updatedTaskData);
-            console.log("Updated task ", data)
+            console.log("Updated task ", data);
             return data;
         } catch (error) {
             console.log("Error ", error)
@@ -86,8 +86,8 @@ export const assignedTaskToUser = createAsyncThunk("task/assignedTaskToUser",
         setAuthHeader(localStorage.getItem("jwt"), api)
 
         try {
+            console.log("Assigned task ", taskId, " ", userId);       
             const { data } = await api.put(`/api/tasks/${taskId}/user/${userId}/assigned`);
-            console.log("Assigned task ", data)
             return data;
         } catch (error) {
             console.log("Error ", error)
