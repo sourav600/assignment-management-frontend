@@ -44,7 +44,6 @@ export default function SubmitFormModel({ item, handleClose, open }) {
         });
     };
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Github Link: ",formData.githubLink);
@@ -78,7 +77,7 @@ export default function SubmitFormModel({ item, handleClose, open }) {
                                     label="Description"
                                     fullWidth
                                     multiline
-                                    rows={4}
+                                    rows={2}
                                     name='description'
                                     value={formData.description}
                                     onChange={handleChange}

@@ -4,25 +4,28 @@ import "./Sidebar.css"
 import CreateNewTaskForm from '../Task/CreateTask'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { logout } from '../../ReduxToolkit/AuthSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
 
 const menu = [
     { name: "Home", value: "Home", role: ["ROLE_ADMIN", "ROLE_CUSTOMER"] },
     { name: "DONE", value: "DONE", role: ["ROLE_ADMIN", "ROLE_CUSTOMER"] },
     { name: "ASSIGNED", value: "ASSIGNED", role: ["ROLE_ADMIN"] },
     { name: "NOT ASSIGNED", value: "PENDING", role: ["ROLE_ADMIN"] },
-    { name: "Create New Task", value: "", role: ["ROLE_ADMIN"] },
-    { name: "Notifications", value: "NOTIFICATION", role: ["ROLE_CUSTOMER"] }
+    { name: "Create New Task", value: "", role: ["ROLE_ADMIN"] }
+    // { name: "PENDING", value: "PENDING", role: ["ROLE_CUSTOMER"] }
 ]
-const role = "ROLE_ADMIN"
 
 const Sidebar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [activeMenu, setActiveMenu] = useState("Home")
 
+    const role = useSelector((state) => state.auth.user?.role);
+
+    const [activeMenu, setActiveMenu] = useState("Home")
     const [openCreateTaskForm, setOpenCreateTaskForm] = useState(false);
+
     const handleCloseCreateTaskForm=()=>{
         setOpenCreateTaskForm(false);
     }
@@ -44,6 +47,10 @@ const Sidebar = () => {
             :location.pathname;
             navigate(updatedPath);
         }
+        else if(item.name === "PENDING" && role === "ROLE_CUSTOMER"){
+            updatedParams.set("filter", "PENDING");
+            navigate(`${location.pathname}?${updatedParams.toString()}`);
+        }
         else{
             updatedParams.set("filter",item.value);
             navigate(`${location.pathname}?${updatedParams.toString()}`)
@@ -51,24 +58,6 @@ const Sidebar = () => {
         setActiveMenu(item.name)
     }
 
-    // From ChatGPT
-    // const handleMenuChange = (item) => {
-    //     const updatedParams = new URLSearchParams(location.search);
-    //     const itemName = item.name.trim();  // Trim any whitespace from item name
-    //     const itemValue = item.value ? item.value.trim() : '';  // Trim any whitespace from item value, if it exists
-
-    //     if (itemName === "Create New Task") {
-    //         handleOpenCreateTaskModel();
-    //     } else if (itemName === "Home") {
-    //         updatedParams.delete("filter");
-    //         navigate(location.pathname);
-    //     } else {
-    //         updatedParams.set("filter", itemValue);
-    //         navigate(`${location.pathname}?${updatedParams.toString()}`);
-    //     }
-
-    //     setActiveMenu(item.name);
-    // };
     const handleLogout = () => {
         dispatch(logout())
         console.log("Handle logout")
