@@ -8,12 +8,12 @@ import { useDispatch, useSelector } from 'react-redux'
 
 
 const menu = [
-    { name: "Home", value: "Home", role: ["ROLE_ADMIN", "ROLE_CUSTOMER"] },
+    { name: "HOME", value: "HOME", role: ["ROLE_ADMIN", "ROLE_CUSTOMER"] },
     { name: "DONE", value: "DONE", role: ["ROLE_ADMIN", "ROLE_CUSTOMER"] },
     { name: "ASSIGNED", value: "ASSIGNED", role: ["ROLE_ADMIN"] },
     { name: "NOT ASSIGNED", value: "PENDING", role: ["ROLE_ADMIN"] },
-    { name: "Create New Task", value: "", role: ["ROLE_ADMIN"] }
-    // { name: "PENDING", value: "PENDING", role: ["ROLE_CUSTOMER"] }
+    { name: "Create New Task", value: "", role: ["ROLE_ADMIN"] },
+    { name: "PENDING", value: "ASSIGNED", role: ["ROLE_CUSTOMER"] }
 ]
 
 const Sidebar = () => {
@@ -40,7 +40,8 @@ const Sidebar = () => {
         if(item.name==="Create New Task"){
             handleOpenCreateTaskModel();
         }
-        else if(item.name === "Home"){
+        else if(item.name === "HOME"){
+            updatedParams.delete("taskId")
             updatedParams.delete("filter")
             const queryString = updatedParams.toString();
             const updatedPath = queryString?`${location.pathname}?${queryString}`
@@ -48,7 +49,7 @@ const Sidebar = () => {
             navigate(updatedPath);
         }
         else if(item.name === "PENDING" && role === "ROLE_CUSTOMER"){
-            updatedParams.set("filter", "PENDING");
+            updatedParams.set("filter", item.value);
             navigate(`${location.pathname}?${updatedParams.toString()}`);
         }
         else{
